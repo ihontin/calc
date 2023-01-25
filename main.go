@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -72,6 +73,7 @@ func calculation(a, b int, oper string) int {
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	rimNums := [10]string{"|", "||", "|||", "|V", "V", "V|", "V||", "V|||", "|X", "X"}
+	rimDozens := [11]string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC", "C"}
 	nums := [10]string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
 	signs := [4]string{"+", "-", "*", "/"}
 
@@ -84,35 +86,58 @@ func main() {
 		if textlen != 3 {
 			//To exit input "e" or "E"
 			if textlen == 1 && splittedString[0] == "e\n" || textlen == 1 && splittedString[0] == "E\n" {
-				fmt.Println("Calculator is turned off.")
+				err := errors.New("invalid data entry")
+				fmt.Print(err)
+				//fmt.Println("Calculator is turned off.")
+				break
+			} else {
+				err := errors.New("invalid data entry")
+				fmt.Print(err)
+				//fmt.Println("Invalid data entry!")
+				//continue
 				break
 			}
-			fmt.Println("Invalid data entry!")
-			continue
 		}
 		a := upper(strings.TrimSpace(splittedString[0]))    //clears spaces and tabs and uppercase
 		b := upper(strings.TrimSpace(splittedString[2]))    //clears spaces and tabs and uppercase
 		oper := upper(strings.TrimSpace(splittedString[1])) //clears spaces and tabs and uppercase
+		// if Arabic nums are entered
 		if Contains(nums, a) && Contains(nums, b) && signContains(signs, oper) {
 			a := conversion(a) // conversion to int
 			b := conversion(b) // conversion to int
 			res := calculation(a, b, oper)
 			fmt.Println(res)
+			//or if Roman nums are entered
+			break
 		} else if Contains(rimNums, a) && Contains(rimNums, b) && signContains(signs, oper) {
 			a := rimToArabic(rimNums, a)
 			b := rimToArabic(rimNums, b)
 			if a <= b && oper == "-" {
-				fmt.Println("There is no zero and negative numbers in the Roman system!")
-				continue
+				err := errors.New("there is no zero and negative numbers in the Roman system")
+				fmt.Print(err)
+				//fmt.Println("There is no zero and negative numbers in the Roman system!")
+				//continue
+				break
 			} else if a < b && oper == "/" {
-				fmt.Println("There is no zero and negative numbers in the Roman system!")
-				continue
+				err := errors.New("there is no zero and negative numbers in the Roman system")
+				fmt.Print(err)
+				//fmt.Println("There is no zero and negative numbers in the Roman system!")
+				//continue
+				break
 			}
 			res := calculation(a, b, oper)
-			fmt.Println(res)
-		} else {
-			fmt.Println("Invalid operation format!")
+			if res%10 == 0 { //if there are no units, do not show them
+				fmt.Println(rimDozens[res/10])
+				break
+			} else { // plus units
+				fmt.Println(rimDozens[res/10] + rimNums[res%10-1])
+				break
+			}
+		} else { //if something is wrong with the data entry
+			err := errors.New("invalid operation format")
+			fmt.Print(err)
+			//fmt.Println("Invalid operation format!")
+			break
 		}
-		//fmt.Println("("+a+")", " ("+b+") ", "("+oper+")")
 	}
 }
