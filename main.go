@@ -86,16 +86,12 @@ func main() {
 		if textlen != 3 {
 			//To exit input "e" or "E"
 			if textlen == 1 && splittedString[0] == "e\n" || textlen == 1 && splittedString[0] == "E\n" {
-				err := errors.New("invalid data entry")
-				fmt.Print(err)
-				//fmt.Println("Calculator is turned off.")
+				fmt.Println("Calculator is turned off")
 				break
 			} else {
-				err := errors.New("invalid data entry")
+				err := errors.New("invalid data entry\n")
 				fmt.Print(err)
-				//fmt.Println("Invalid data entry!")
-				//continue
-				break
+				continue
 			}
 		}
 		a := upper(strings.TrimSpace(splittedString[0]))    //clears spaces and tabs and uppercase
@@ -108,36 +104,28 @@ func main() {
 			res := calculation(a, b, oper)
 			fmt.Println(res)
 			//or if Roman nums are entered
-			break
 		} else if Contains(rimNums, a) && Contains(rimNums, b) && signContains(signs, oper) {
 			a := rimToArabic(rimNums, a)
 			b := rimToArabic(rimNums, b)
 			if a <= b && oper == "-" {
-				err := errors.New("there is no zero and negative numbers in the Roman system")
+				err := errors.New("there is no zero and negative numbers in the Roman system\n")
 				fmt.Print(err)
-				//fmt.Println("There is no zero and negative numbers in the Roman system!")
-				//continue
-				break
+				continue
 			} else if a < b && oper == "/" {
-				err := errors.New("there is no zero and negative numbers in the Roman system")
+				err := errors.New("there is no zero and negative numbers in the Roman system\n")
 				fmt.Print(err)
-				//fmt.Println("There is no zero and negative numbers in the Roman system!")
-				//continue
-				break
+				continue
 			}
 			res := calculation(a, b, oper)
 			if res%10 == 0 { //if there are no units, do not show them
 				fmt.Println(rimDozens[res/10])
-				break
 			} else { // plus units
 				fmt.Println(rimDozens[res/10] + rimNums[res%10-1])
-				break
 			}
 		} else { //if something is wrong with the data entry
-			err := errors.New("invalid operation format")
+			err := errors.New("invalid operation format\n")
 			fmt.Print(err)
-			//fmt.Println("Invalid operation format!")
-			break
+			continue
 		}
 	}
 }
